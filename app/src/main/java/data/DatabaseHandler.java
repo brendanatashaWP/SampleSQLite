@@ -2,8 +2,12 @@ package data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 import models.MyWish;
 
@@ -56,5 +60,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         val.put("recordDate", System.currentTimeMillis()); //coba tanpa java.lang
         db.update("wishes", val, "itemId=?", new String[]{String.valueOf(wish.getItemId())});
         db.close();
+    }
+
+    //ambil data perItem berdasarkan itemId
+
+    public MyWish getWishById(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from wishes where itemId=?", new String[]{String.valueOf(id)});
+        if(cursor != null){
+            cursor.moveToFirst();
+        }
+        //membuat objek untuk menampung data yang dipilih cursor
+        MyWish wish = new MyWish();
+        wish.setItemId(cursor.getInt(cursor.getColumnIndex("itemId")));
+        wish.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+        wish.setContent(cursor.getString(cursor.getColumnIndex("content")));
+        //mengubah format data tanggal
+        DateFormat date = DateFormat.getDateInstance();
+        String dataDate = date.format(new Date(cursor.getLong(cursor.getColumnIndex("recordDate"))).getTime());
+        wish.setRecordDate(dataDate);
+        db.close();
+        return wish;
     }
 }
