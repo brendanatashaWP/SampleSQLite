@@ -64,7 +64,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //ambil data perItem berdasarkan itemId
-
     public MyWish getWishById(int id){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from wishes where itemId=?", new String[]{String.valueOf(id)});
