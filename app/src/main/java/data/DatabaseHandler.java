@@ -39,4 +39,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert("wishes", null, val);
         db.close();
     }
+
+    //hapus data di db wishes
+    public void deleteWish(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("wishes", "itemId=?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    //update data di db wishes
+    public void updateWish(MyWish wish){
+
+    }
 }
