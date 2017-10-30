@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import models.MyWish;
@@ -81,5 +82,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         wish.setRecordDate(dataDate);
         db.close();
         return wish;
+    }
+
+    public ArrayList<MyWish> getAllWish(){
+        ArrayList<MyWish> wishList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from wishes order by title asc", null);
+        if(cursor.moveToFirst()){
+            do{
+                MyWish wish = new MyWish();
+                wish.setItemId(cursor.getInt(cursor.getColumnIndex("itemId")));
+                wish.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                wish.setContent(cursor.getString(cursor.getColumnIndex("content")));
+                DateFormat dateFormat = DateFormat.getDateInstance();
+                String dataDate = dateFormat.format(new Date(cursor.getLong(cursor.getColumnIndex("recordDate"))).getTime());
+                wish.setRecordDate(dataDate);
+                wishList.add(wish);
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return wishList;
     }
 }
