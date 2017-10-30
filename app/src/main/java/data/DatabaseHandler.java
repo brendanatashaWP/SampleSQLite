@@ -49,6 +49,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //update data di db wishes
     public void updateWish(MyWish wish){
-
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues val = new ContentValues();
+        val.put("title", wish.getTitle());
+        val.put("content", wish.getContent());
+        val.put("recordDate", System.currentTimeMillis()); //coba tanpa java.lang
+        db.update("wishes", val, "itemId=?", new String[]{String.valueOf(wish.getItemId())});
+        db.close();
     }
 }
